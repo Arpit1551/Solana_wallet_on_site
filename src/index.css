@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0061FF;
+  --color-secondary: #0041CC;
+  --color-success: #22C55E;
+  --color-surface: #F8FAFC;
+  --color-ink: #0F172A;
+  --color-muted: #64748B;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+}
+
+.glass-card {
+  @apply bg-white border border-slate-200 shadow-sm rounded-2xl;
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at top right, rgba(0, 97, 255, 0.05), transparent);
+}
+

@@ -1,0 +1,5 @@
+{
+  "name": "SolanaWallet",
+  "description": "A secure and user-friendly Solana-first crypto wallet for managing digital assets.",
+  "requestFramePermissions": []
+}
