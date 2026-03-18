@@ -4,6 +4,7 @@ import { WalletOverview } from '../components/dashboard/WalletOverview';
 import { ActionSections } from '../components/dashboard/ActionSections';
 import { TokenList } from '../components/dashboard/TokenList';
 import { TransactionTable } from '../components/dashboard/TransactionTable';
+import { useWallet } from '../context/WalletContext';
 
 export const DashboardScreen = () => {
   const MNEMONICS = localStorage.getItem('mnemonics')?.split(" ");
@@ -11,10 +12,19 @@ export const DashboardScreen = () => {
   const pubKey = localStorage.getItem('pubkey');
   const secretKey = localStorage.getItem('secretKey');
 
+  async function main() {
+
+    const { setPublicKey, refreshBalance } = useWallet();
+    await setPublicKey(pubKey);
+    await refreshBalance();
+
+  } 
+  main();
+
   return (
     <div className="space-y-12">
-      <WalletOverview onShowMnemonic={() => setShowMnemonic(true)} pubkey={pubKey} secretKey = {secretKey} />
-      
+      <WalletOverview onShowMnemonic={() => setShowMnemonic(true)} pubkey={pubKey} secretKey={secretKey} />
+
       <ActionSections />
 
       <section className="px-4 pb-12">
@@ -24,7 +34,7 @@ export const DashboardScreen = () => {
         </div>
       </section>
 
-      <MnemonicModal isOpen={showMnemonic} onClose={() => setShowMnemonic(false) } MNEMONIC = { MNEMONICS }  />
+      <MnemonicModal isOpen={showMnemonic} onClose={() => setShowMnemonic(false)} MNEMONIC={MNEMONICS} />
     </div>
   );
 };

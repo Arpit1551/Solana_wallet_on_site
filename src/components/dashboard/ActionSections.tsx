@@ -1,13 +1,24 @@
+import { useState } from "react";
 import { ArrowUp, Send, RefreshCw, Plus } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
+import { requestAirDrop } from '@/src/helper/requestAirDrop';
+import { useWallet } from '@/src/context/WalletContext';
 
 export const ActionSections = () => {
 
-  const handleRequestAirDrop = () =>{
-    console.log("Request Airdrop clicked");
-  }
+  const { publicKey, balance, refreshBalance } = useWallet();
+  const [loading, setLoading] = useState(false);
 
+  const handleRequestAirDrop = async () =>{
+    if(balance > 0.5){
+      console.log("You have enough sol for transaction!");
+    }else{
+      console.log("Request is processing....");
+      await requestAirDrop(publicKey);
+      await refreshBalance();
+    }
+  }
 
   return (
     <section className="px-4">
@@ -40,7 +51,7 @@ export const ActionSections = () => {
           <div className="mt-8 pt-6 border-t border-slate-100">
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted">Current Balance</span>
-              <span className="text-2xl font-bold text-ink">145.20 SOL</span>
+              <span className="text-2xl font-bold text-ink">{balance} SOL</span>
             </div>
           </div>
         </Card>

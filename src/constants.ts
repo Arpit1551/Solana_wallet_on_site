@@ -1,4 +1,5 @@
 import { Token, Transaction } from './types';
+import { Connection, clusterApiUrl } from "@solana/web3.js";
 
 export const TOKENS: Token[] = [
   {
@@ -56,3 +57,5 @@ export const TRANSACTIONS: Transaction[] = [
     description: 'Swap SOL → USDC',
   },
 ];
+
+export const connection = new Connection("http://127.0.0.1:8899", "confirmed");
