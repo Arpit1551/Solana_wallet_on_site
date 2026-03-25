@@ -5,7 +5,12 @@ import { Card } from '../ui/Card';
 import { requestAirDrop } from '@/src/helper/requestAirDrop';
 import { useWallet } from '@/src/context/WalletContext';
 
-export const ActionSections = () => {
+interface ActionSectionsProps{
+  onShowTransferSol: ()=>void;
+}
+
+
+export const ActionSections = ({onShowTransferSol} : ActionSectionsProps) => {
 
   const { publicKey, balance, refreshBalance } = useWallet();
   const [loading, setLoading] = useState(false);
@@ -37,7 +42,7 @@ export const ActionSections = () => {
               Airdrop 1 SOL
             </Button>
 
-            <Button variant="outline" className="py-4">
+            <Button variant="outline" className="py-4" onClick={onShowTransferSol}>
               <Send className="w-5 h-5" />
               Send SOL
             </Button>

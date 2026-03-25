@@ -24,5 +24,5 @@ export const generateKeypair = (mnemonic: string): void => {
   const keypair = Keypair.fromSecretKey(naclKeypair.secretKey);
 
   localStorage.setItem("pubkey", keypair.publicKey.toBase58());
-  localStorage.setItem("secretKey", bs58.encode(keypair.secretKey.slice(0, 32)));
+  localStorage.setItem("secretKey", bs58.encode(keypair.secretKey));
 };
