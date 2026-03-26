@@ -7,10 +7,11 @@ import { useWallet } from '@/src/context/WalletContext';
 
 interface ActionSectionsProps{
   onShowTransferSol: ()=>void;
+  onShowCreateToken: ()=>void;
 }
 
 
-export const ActionSections = ({onShowTransferSol} : ActionSectionsProps) => {
+export const ActionSections = ({onShowTransferSol, onShowCreateToken} : ActionSectionsProps) => {
 
   const { publicKey, balance, refreshBalance } = useWallet();
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,7 @@ export const ActionSections = ({onShowTransferSol} : ActionSectionsProps) => {
             <h3 className="text-xl font-bold text-ink">Token Actions</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button variant="outline" className="py-4">
+            <Button variant="outline" className="py-4" onClick={onShowCreateToken}>
               <Plus className="w-5 h-5" />
               Create Token
             </Button>
