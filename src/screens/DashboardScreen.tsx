@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MnemonicModal } from '../components/modals/MnemonicModal';
 import { WalletOverview } from '../components/dashboard/WalletOverview';
 import { ActionSections } from '../components/dashboard/ActionSections';

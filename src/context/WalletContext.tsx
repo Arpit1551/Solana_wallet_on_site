@@ -11,6 +11,13 @@ interface WalletContextType {
     refreshPubkey: () => void;
 }
 
+interface TokenTypes{
+        name: string;
+        img: string;
+        amount: number;
+        price: number;
+}
+
 const WalletContext = createContext<WalletContextType | null>(null);
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
@@ -19,6 +26,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const [balance, setBalance] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [tokens, setTokens] = useState<TokenTypes[] | null>
 
     const fetchBalance = async (pubkey: string) => {
         try {

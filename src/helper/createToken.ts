@@ -70,10 +70,10 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc} : creat
         })
     );
 
-    // const tx_two = new Transaction().add(
-    //     SystemProgram.
-    // )
-
     const signature = await sendAndConfirmTransaction(connection, tx, [userKeypair, mintKeypair]);
-    console.log(signature);
+    console.log(signature, mintKeypair.publicKey);
+    return{
+        tx_sign: signature,
+        token_mint: mintKeypair.publicKey
+    }
 }
