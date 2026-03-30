@@ -26,7 +26,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const [balance, setBalance] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [tokens, setTokens] = useState<TokenTypes[] | null>
+    const [tokens, setTokens] = useState<TokenTypes[] | null>(null);
 
     const fetchBalance = async (pubkey: string) => {
         try {
@@ -52,7 +52,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <WalletContext.Provider
-    value= {{ balance, publicKey, loading, error, setPublicKey, refreshBalance }}
+    value= {{ balance, publicKey, tokens, loading, error, setPublicKey, setTokens, refreshBalance }}
   >
     { children }
     </WalletContext.Provider>

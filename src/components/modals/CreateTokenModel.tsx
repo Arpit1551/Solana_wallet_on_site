@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle, X, Link as LinkIcon, Info, Shield, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { createToken } from '@/src/helper/createToken';
 
 interface CreateTokenModalProps {
     isOpen: boolean;
@@ -26,10 +27,18 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
         description: ''
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log(formData);
-        onClose();
+        const res = await createToken({
+            name: formData.name,
+            symbol: formData.symbol,
+            decimal: formData.decimals,
+            imgUrl: formData.imgUrl,
+            desc: formData.description
+        });
+
+        console.log(res);
     };
 
     return (
@@ -50,7 +59,7 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col border border-slate-200"
+                        className="relative w-full max-w-2xl bg-white rounded-4xl shadow-2xl overflow-hidden flex flex-col border border-slate-200"
                     >
                         {/* Header */}
                         <div className="px-8 pt-8 pb-4 flex justify-between items-start">
