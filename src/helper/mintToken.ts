@@ -4,8 +4,8 @@ import { Keypair, PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 
 interface mintTokenProps{
-    mintPubkey: string,
-    ataAddress: string,
+    mintPubkey: PublicKey,
+    ataAddress: PublicKey,
     amount: number
 }
 

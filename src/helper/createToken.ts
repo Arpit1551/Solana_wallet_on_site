@@ -4,16 +4,19 @@ import { createInitializeMetadataPointerInstruction, createInitializeMintInstruc
 import { createInitializeInstruction, pack } from "@solana/spl-token-metadata";
 import { connection } from "../constants";
 import { uploadMetadata } from "../services/uploadMetadataFile";
+import { createAssociateTokenAccount } from "./createAta";
+import { mintToken } from "./mintToken";
 
 interface createTokenProps {
     name: string,
     symbol: string,
     decimal: number,
     imgUrl: File,
-    desc: string
+    desc: string,
+    amount: number
 };
 
-export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: createTokenProps) => {
+export const createToken = async ({ name, symbol, decimal, imgUrl, desc, amount }: createTokenProps) => {
 
     try {
         console.log("Enter the create token");
@@ -33,7 +36,7 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: creat
 
         const mintSpace = getMintLen([ExtensionType.MetadataPointer]);
         const metadataSpace = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length;
-        const totalSpace = mintSpace + metadataSpace + 8;
+        const totalSpace = mintSpace + metadataSpace;
 
         const lamports = await connection.getMinimumBalanceForRentExemption(totalSpace);
 
@@ -42,7 +45,7 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: creat
                 fromPubkey: userKeypair.publicKey,
                 newAccountPubkey: mintKeypair.publicKey,
                 lamports: lamports,
-                space: totalSpace,
+                space: mintSpace,
                 programId: TOKEN_2022_PROGRAM_ID
             }),
 
@@ -75,6 +78,7 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: creat
 
         const signature = await sendAndConfirmTransaction(connection, tx, [userKeypair, mintKeypair]);
         console.log(signature, mintKeypair.publicKey);
+
         return {
             tx_sign: signature,
             token_mint: mintKeypair.publicKey

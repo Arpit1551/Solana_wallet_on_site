@@ -4,11 +4,11 @@ import { Keypair, PublicKey } from "@solana/web3.js"
 import bs58 from 'bs58'
 
 interface createAssociateTokenAccountProps{
-    mintPubkey: string,
-    ownerPubkey?: string
+    mintPubkey: PublicKey,
+    ownerPubkey?: PublicKey
 }
 
-export const createAssociateTokenAccount = async ({ mintPubkey, ownerPubkey }: createAssociateTokenAccountProps)  => {
+export const createAssociateTokenAccount = async ( {mintPubkey, ownerPubkey} : createAssociateTokenAccountProps)  => {
 
     if(!new PublicKey(mintPubkey) || !new PublicKey(ownerPubkey)){
         console.log("Invalid Pubkey input!");
@@ -18,14 +18,14 @@ export const createAssociateTokenAccount = async ({ mintPubkey, ownerPubkey }: c
     try {
         const payer = Keypair.fromSecretKey(bs58.decode(localStorage.getItem('secretKey')));
         const owner = ownerPubkey ? new PublicKey(ownerPubkey) : payer.publicKey;
-    
+        console.log(mintPubkey.toString());
         const ata = await getOrCreateAssociatedTokenAccount(
             connection,
             payer,
-            new PublicKey(mintPubkey),
+            mintPubkey,
             owner
         );
-        console.log(ata);
+        console.log(ata.address);
         return ata.address;
         
     } catch (error) {

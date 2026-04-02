@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { PlusCircle, X, Image as ImageIcon, Shield, Upload, Hash, Coins } from 'lucide-react';
+import { PlusCircle, X, Image as ImageIcon, Shield, Upload, Hash } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { createToken } from '@/src/helper/createToken';
+import { useWallet } from '@/src/context/WalletContext';
 
 interface CreateTokenModalProps {
     isOpen: boolean;
@@ -19,12 +20,14 @@ interface TokenFormData {
 }
 
 export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => {
+    const { publicKey } = useWallet();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    
     const [formData, setFormData] = useState<TokenFormData>({
         name: '',
         symbol: '',
         decimals: 9,
-        supply: '',
+        supply: '0',
         imageFile: null,
         imagePreview: '',
         description: ''
@@ -33,11 +36,6 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-
-            // if (file.size > 90) {
-            //     return console.log('Image is too big');
-            // }
-
             setFormData({
                 ...formData,
                 imageFile: file,
@@ -48,15 +46,13 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData.imageFile.size / 1024);
-        console.log(formData.size / 1024);
-
         await createToken({
             name: formData.name,
             symbol: formData.symbol,
-            decimal: formData.decimal,
+            decimal: formData.decimals,
             imgUrl: formData.imageFile,
-            desc: formData.description
+            desc: formData.description,
+            amount: formData.supply
         });
     };
 
@@ -93,7 +89,7 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
 
                         {/* Form Body */}
                         <form onSubmit={handleSubmit} className="px-8 py-4 space-y-6 overflow-y-auto max-h-[75vh] scrollbar-hide">
-
+                            
                             {/* Row 1: Name & Symbol */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
@@ -116,8 +112,8 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
                                 </div>
                             </div>
 
-                            {/* Row 2: Decimals & Supply */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Row 2: Decimals & Token Icon (Side by Side) */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                                 <div className="space-y-1.5">
                                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
                                         <Hash className="w-3 h-3" /> Decimals
@@ -129,30 +125,14 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
                                         onChange={e => setFormData({ ...formData, decimals: parseInt(e.target.value) })}
                                     />
                                 </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
-                                        <Coins className="w-3 h-3" /> Initial Supply
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="w-full bg-slate-100/50 border border-slate-200/60 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-900 font-mono"
-                                        placeholder="1,000,000"
-                                        value={formData.supply}
-                                        onChange={e => setFormData({ ...formData, supply: e.target.value })}
-                                    />
-                                </div>
-                            </div>
 
-                            {/* Row 3: Icon & Description side-by-side */}
-                            <div className="flex flex-col sm:flex-row gap-6">
-                                {/* Icon Side */}
-                                <div className="space-y-1.5 shrink-0">
+                                <div className="space-y-1.5">
                                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Token Icon</label>
                                     <div
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="relative group cursor-pointer"
+                                        className="relative group cursor-pointer w-32 h-32"
                                     >
-                                        <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-100/30 flex flex-col items-center justify-center transition-all group-hover:border-blue-400 group-hover:bg-blue-50/30 overflow-hidden shadow-inner">
+                                        <div className="w-full h-full rounded-3xl border-2 border-dashed border-slate-200 bg-slate-100/30 flex flex-col items-center justify-center transition-all group-hover:border-blue-400 group-hover:bg-blue-50/30 overflow-hidden shadow-inner">
                                             {formData.imagePreview ? (
                                                 <div className="relative w-full h-full">
                                                     <img src={formData.imagePreview} alt="Preview" className="w-full h-full object-cover" />
@@ -170,36 +150,26 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
                                         <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
                                     </div>
                                 </div>
-
-                                {/* Description Side */}
-                                <div className="space-y-1.5 flex-1">
-                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                                    <textarea
-                                        className="w-full h-32 sm:h-36 bg-slate-100/50 border border-slate-200/60 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-900 resize-none placeholder:text-slate-400"
-                                        placeholder="The utility and vision behind your token..."
-                                        value={formData.description}
-                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    />
-                                </div>
                             </div>
 
-                            {/* Storage Info */}
-                            <div className="bg-blue-50/50 border border-blue-100/50 rounded-3xl p-4 flex gap-4 items-start">
-                                <div className="bg-white p-2 rounded-xl shadow-sm">
-                                    <Shield className="w-5 h-5 text-blue-600" />
-                                </div>
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-bold text-slate-900">Metadata Storage</p>
-                                    <p className="text-[11px] text-slate-500 leading-relaxed">Images and metadata are stored on IPFS/Arweave.</p>
-                                </div>
+                            {/* Row 3: Full Width Description */}
+                            <div className="space-y-1.5 w-full">
+                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                <textarea
+                                    className="w-full h-32 bg-slate-100/50 border border-slate-200/60 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-900 resize-none placeholder:text-slate-400"
+                                    placeholder="The utility and vision behind your token..."
+                                    value={formData.description}
+                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                />
                             </div>
+
                         </form>
 
                         {/* Footer */}
                         <div className="p-8 bg-slate-50/80 backdrop-blur-md flex flex-col sm:flex-row gap-4 items-center justify-between border-t border-slate-100 mt-auto">
                             <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-                                Mainnet Beta
+                                Devnet
                             </div>
                             <div className="flex gap-3 w-full sm:w-auto">
                                 <button onClick={onClose} className="px-6 py-3 rounded-2xl text-slate-500 font-bold hover:bg-slate-200/50 transition-colors">
