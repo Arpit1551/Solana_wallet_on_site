@@ -11,39 +11,35 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       nodePolyfills({
-        // To add only specific polyfills, add them here. If no option is passed, adds all polyfills
-        include: ['path', 'buffer', 'stream', 'process'],
-        // To exclude specific polyfills, add them to this list. Note: if include is provided, this has no effect
-        exclude: [
-          'http', // Excludes the polyfill for `http` and `node:http`.
-        ],
-        // Whether to polyfill specific globals.
+        // 1. Remove the 'include' restriction so it catches all necessary modules
+        // OR make sure 'http' and 'https' are added to the list below:
+        include: ['path', 'buffer', 'stream', 'process', 'http', 'https', 'util'], 
+        
+        // 2. Remove 'http' from exclude!
+        exclude: [], 
+
         globals: {
-          Buffer: true, // can also be 'build', 'dev', or false
+          Buffer: true,
           global: true,
           process: true,
         },
-        // Override the default polyfills for specific modules.
-        overrides: {
-          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
-          fs: 'memfs',
-        },
-        // Whether to polyfill `node:` protocol imports.
         protocolImports: true,
       }),
     ],
     define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      global: "globalThis"
+      'process.env': {},
+      // Note: nodePolyfills already handles global, but keeping this is fine
+      global: "globalThis",
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        // 3. Add these aliases as a backup for the bundler
+        http: 'rollup-plugin-node-polyfills/polyfills/http',
+        https: 'rollup-plugin-node-polyfills/polyfills/http',
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
   };
