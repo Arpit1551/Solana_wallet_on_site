@@ -22,7 +22,7 @@ interface TokenFormData {
 export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => {
     const { publicKey } = useWallet();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    
+
     const [formData, setFormData] = useState<TokenFormData>({
         name: '',
         symbol: '',
@@ -46,13 +46,17 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!formData.imageFile) {
+            alert('Please upload a token icon');
+            return;
+        }
         await createToken({
             name: formData.name,
             symbol: formData.symbol,
             decimal: formData.decimals,
             imgUrl: formData.imageFile,
             desc: formData.description,
-            amount: formData.supply
+            amount: Number(formData.supply)
         });
     };
 
@@ -89,7 +93,7 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
 
                         {/* Form Body */}
                         <form onSubmit={handleSubmit} className="px-8 py-4 space-y-6 overflow-y-auto max-h-[75vh] scrollbar-hide">
-                            
+
                             {/* Row 1: Name & Symbol */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
