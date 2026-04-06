@@ -26,7 +26,11 @@ export const uploadMetadata = async ({ name, symbol, desc, imgUrl }: uploadMetad
 
         const uploadedData = await pinata.upload.public.json(tokenMetadata);
 
-        return `https://gateway.pinata.cloud/ipfs/${uploadedData.cid}`;
+        return ({ 
+            img_url: `https://gateway.pinata.cloud/ipfs/${upload.cid}`,
+            data_uri: `https://gateway.pinata.cloud/ipfs/${uploadedData.cid}`
+         });
+         
     } catch (error) {
         throw error;
     }

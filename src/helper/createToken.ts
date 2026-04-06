@@ -10,11 +10,10 @@ interface createTokenProps {
     symbol: string,
     decimal: number,
     imgUrl: File,
-    desc: string,
-    amount: number
+    desc: string
 };
 
-export const createToken = async ({ name, symbol, decimal, imgUrl, desc, amount }: createTokenProps) => {
+export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: createTokenProps) => {
 
     try {
         console.log("Enter the create token");
@@ -27,13 +26,12 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc, amount 
             const mintKeypair = Keypair.generate();
 
             const getUri = await uploadMetadata({ name, symbol, desc, imgUrl });
-            console.log(getUri);
 
             const metadata = {
                 mint: mintKeypair.publicKey,
                 name: name,
                 symbol: symbol,
-                uri: getUri,
+                uri: getUri.data_uri,
                 additionalMetadata: []
             };
 
@@ -84,7 +82,9 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc, amount 
 
             return {
                 tx_sign: signature,
-                token_mint: mintKeypair.publicKey
+                token_mint: mintKeypair.publicKey,
+                img_url: getUri.img_url,
+                success: true
             }
         }
     } catch (error) {

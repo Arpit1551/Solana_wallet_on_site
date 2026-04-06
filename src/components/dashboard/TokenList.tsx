@@ -4,7 +4,6 @@ import { Card } from '../ui/Card';
 export const TokenList = () => {
   const { tokens, loading } = useWallet();
 
-  // Calculate total portfolio value dynamically
   const totalBalance = tokens.reduce((acc, token) => acc + (token.valueUsd ?? 0), 0);
 
   if (loading) return <Card className="p-8 h-full flex items-center justify-center">Loading...</Card>;
