@@ -11,7 +11,12 @@ interface mintTokenProps{
 
 export const mintToken = async ({mintPubkey, ataAddress, amount}: mintTokenProps) => {
 
-    const payer = Keypair.fromSecretKey(bs58.decode(localStorage.getItem('secretKey')));
+    const secretKey = await localStorage.getItem('secretKey');
+    if(!secretKey){
+        console.log("Cannot get secret key of the user !");
+        return;
+    }
+    const payer = Keypair.fromSecretKey(bs58.decode(secretKey));
 
     const signature = await mintTo(
         connection, 

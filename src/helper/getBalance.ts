@@ -2,6 +2,10 @@ import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/
 
 export const getBalance = async () => {
     const pubkey = localStorage.getItem('pubkey');
+    if(!pubkey){
+        console.log("Cannot get pubkey");
+        return;
+    }
 
     const connection = new Connection(clusterApiUrl('devnet'));
 

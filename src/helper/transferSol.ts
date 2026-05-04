@@ -5,12 +5,11 @@ import bs58 from 'bs58';
 export const transferSol = async (fromPubKey:string ,receiverPubKey: string, amount: number) => {
 
     const privateKey = localStorage.getItem('secretKey');
-    console.log(privateKey);
-    const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
-
     if(!fromPubKey || !privateKey){
         return;
-    }
+    };
+
+    const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
 
     try {
         const tx = new Transaction().add(

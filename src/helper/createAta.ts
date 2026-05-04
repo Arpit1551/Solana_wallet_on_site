@@ -10,13 +10,18 @@ interface createAssociateTokenAccountProps{
 
 export const createAssociateTokenAccount = async ( {mintPubkey, ownerPubkey} : createAssociateTokenAccountProps)  => {
 
-    if(!new PublicKey(mintPubkey) || !new PublicKey(ownerPubkey)){
+    if (!mintPubkey) {
         console.log("Invalid Pubkey input!");
-        return; 
+        return;
     }
 
     try {
-        const payer = Keypair.fromSecretKey(bs58.decode(localStorage.getItem('secretKey')));
+        const secretKey = localStorage.getItem('secretKey');
+        if (!secretKey) {
+            console.log("Missing secret key!");
+            return;
+        }
+        const payer = Keypair.fromSecretKey(bs58.decode(secretKey));
         const owner = ownerPubkey ? new PublicKey(ownerPubkey) : payer.publicKey;
         console.log(mintPubkey.toString());
         const ata = await getOrCreateAssociatedTokenAccount(

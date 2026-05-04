@@ -8,9 +8,10 @@ import { useWallet } from '@/src/context/WalletContext';
 interface ActionSectionsProps {
   onShowTransferSol: () => void;
   onShowCreateToken: () => void;
+  onShowMintToken: () => void;
 }
 
-export const ActionSections = ({ onShowTransferSol, onShowCreateToken }: ActionSectionsProps) => {
+export const ActionSections = ({ onShowTransferSol, onShowCreateToken, onShowMintToken }: ActionSectionsProps) => {
   const { publicKey, balance, refreshBalance } = useWallet();
   const displayBalance = balance ?? 0;
   const [loading, setLoading] = useState(false);
@@ -104,7 +105,7 @@ export const ActionSections = ({ onShowTransferSol, onShowCreateToken }: ActionS
               <Send className="w-5 h-5" />
               Send Token
             </Button>
-            <Button variant="outline" className="py-4 flex items-center gap-2">
+            <Button variant="outline" className="py-4 flex items-center gap-2" onClick={onShowMintToken}>
               <Send className="w-5 h-5" />
               Mint Token
             </Button>

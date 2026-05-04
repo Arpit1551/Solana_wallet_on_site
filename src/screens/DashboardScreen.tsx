@@ -21,6 +21,11 @@ export const DashboardScreen = () => {
   const pubKey = localStorage.getItem('pubkey');
   const secretKey = localStorage.getItem('secretKey');
 
+  if(!pubKey || !secretKey) {
+    console.log("Cannot get pubkey and secret key!");
+    return;
+  }
+
   useEffect(() => {
     const initializeWallet = async () => {
       if (pubKey) {
@@ -31,7 +36,6 @@ export const DashboardScreen = () => {
     initializeWallet();
   }, [pubKey]);
 
-  // Placeholder function for the mint action
   const handleMintAction = (amount: number) => {
     console.log("Minting amount:", amount);
     // You can call your blockchain logic here

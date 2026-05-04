@@ -35,30 +35,27 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const [error, setError] = useState<string | null>(null);
     const [tokens, setTokens] = useState<TokenTypes[]>([]);
 
-    // Helper to update/add the SOL token in the list without wiping others
-    const updateSolInList = useCallback((solAmount: number) => {
-        setTokens((prev) => {
-            const solToken: TokenTypes = {
-                id: "native-sol", // Use a fixed string ID
-                name: "Solana",
-                symbol: "SOL",
-                img: "https://imgs.search.brave.com/...", // Shortened for brevity
-                color: "#8247e5",
-                balance: solAmount,
-                price: 150,
-                valueUsd: solAmount * 150,
-                change24h: 5.2
-            };
+const updateSolInList = useCallback((solAmount: number) => {
+    setTokens((prev) => {
+        const solToken: TokenTypes = {
+            id: "native-sol",
+            name: "Solana",
+            symbol: "SOL",
+            img: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
+            color: "#8247e5",
+            balance: solAmount,
+            price: 150,
+            valueUsd: solAmount * 150,
+            change24h: 5.2
+        };
 
-            const exists = prev.find(t => t.id === "native-sol");
-            if (exists) {
-                // Just update the balance of the existing SOL entry
-                return prev.map(t => t.id === "native-sol" ? solToken : t);
-            }
-            // If SOL isn't there (first load), add it to the start
-            return [solToken, ...prev];
-        });
-    }, []);
+        const exists = prev.find(t => t.id === "native-sol");
+        if (exists) {
+            return prev.map(t => t.id === "native-sol" ? solToken : t);
+        }
+        return [solToken, ...prev];
+    });
+}, []);
 
     const fetchBalance = async (pubkey: string) => {
         try {
