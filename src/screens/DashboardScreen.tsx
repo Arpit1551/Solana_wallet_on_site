@@ -4,15 +4,18 @@ import { WalletOverview } from '../components/dashboard/WalletOverview';
 import { ActionSections } from '../components/dashboard/ActionSections';
 import { TokenList } from '../components/dashboard/TokenList';
 import { TransactionTable } from '../components/dashboard/TransactionTable';
-import { useWallet } from '../context/WalletContext';
+import { TokenTypes, useWallet } from '../context/WalletContext';
 import { SendSolModal } from '../components/modals/SendSolModel';
 import { CreateTokenModal } from '../components/modals/CreateTokenModel';
 import { MintTokenModal } from '../components/modals/MintTokenModal'; // Import the new modal
+import { mintToken } from '../helper/mintToken';
+import { createAssociateTokenAccount } from '../helper/createAta';
+import { PublicKey } from '@solana/web3.js';
 
 export const DashboardScreen = () => {
   const { setPublicKey, refreshBalance, balance } = useWallet();
 
-  const MNEMONICS = localStorage.getItem('mnemonics')?.split(" ");
+  const MNEMONICS = localStorage.getItem('mnemonics')?.split(" ") || [];
   const [showMnemonic, setShowMnemonic] = useState(false);
   const [showTransferSol, setShowTransferSol] = useState(false);
   const [showCreateToken, setShowCreateToken] = useState(false);
@@ -21,7 +24,7 @@ export const DashboardScreen = () => {
   const pubKey = localStorage.getItem('pubkey');
   const secretKey = localStorage.getItem('secretKey');
 
-  if(!pubKey || !secretKey) {
+  if (!pubKey || !secretKey) {
     console.log("Cannot get pubkey and secret key!");
     return;
   }
@@ -36,21 +39,30 @@ export const DashboardScreen = () => {
     initializeWallet();
   }, [pubKey]);
 
-  const handleMintAction = (amount: number) => {
+  const handleMintAction = async (amount: number, token: TokenTypes) => {
     console.log("Minting amount:", amount);
-    // You can call your blockchain logic here
+    console.log("Token: ", token.token_mint);
+
+    if (token.token_mint) {
+      let ata = await createAssociateTokenAccount({ mintPubkey: new PublicKey(token.token_mint) });
+      if (ata) {
+        let response = await mintToken({ mintPubkey: new PublicKey(token.token_mint), ataAddress: ata, amount: amount });
+        console.log(response);
+      }
+    };
+
   };
 
   return (
     <div className="space-y-12">
-      <WalletOverview 
-        onShowMnemonic={() => setShowMnemonic(true)} 
-        pubkey={pubKey} 
-        secretKey={secretKey} 
+      <WalletOverview
+        onShowMnemonic={() => setShowMnemonic(true)}
+        pubkey={pubKey}
+        secretKey={secretKey}
       />
 
-      <ActionSections 
-        onShowTransferSol={() => setShowTransferSol(true)} 
+      <ActionSections
+        onShowTransferSol={() => setShowTransferSol(true)}
         onShowCreateToken={() => setShowCreateToken(true)}
         onShowMintToken={() => setShowMintToken(true)} // Pass the trigger here
       />
@@ -63,28 +75,27 @@ export const DashboardScreen = () => {
       </section>
 
       {/* Modals */}
-      <MnemonicModal 
-        isOpen={showMnemonic} 
-        onClose={() => setShowMnemonic(false)} 
-        MNEMONIC={MNEMONICS} 
+      <MnemonicModal
+        isOpen={showMnemonic}
+        onClose={() => setShowMnemonic(false)}
+        MNEMONIC={MNEMONICS}
       />
-      
-      <SendSolModal 
-        isOpen={showTransferSol} 
-        onClose={() => setShowTransferSol(false)} 
-        solPrice={1} 
+
+      <SendSolModal
+        isOpen={showTransferSol}
+        onClose={() => setShowTransferSol(false)}
+        solPrice={1}
       />
-      
-      <CreateTokenModal 
-        isOpen={showCreateToken} 
-        onClose={() => setShowCreateToken(false)} 
+
+      <CreateTokenModal
+        isOpen={showCreateToken}
+        onClose={() => setShowCreateToken(false)}
       />
 
       {/* Integrated Mint Token Modal */}
-      <MintTokenModal 
-        isOpen={showMintToken} 
-        onClose={() => setShowMintToken(false)} 
-        balance={balance || 0}
+      <MintTokenModal
+        isOpen={showMintToken}
+        onClose={() => setShowMintToken(false)}
         onMint={handleMintAction}
       />
     </div>

@@ -16,12 +16,10 @@ export const MintTokenModal: React.FC<MintTokenModalProps> = ({
   const { tokens } = useWallet();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // States
   const [amount, setAmount] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenTypes | null>(null);
 
-  // Set initial token and handle outside clicks
   useEffect(() => {
     if (tokens.length > 0 && !selectedToken) {
       setSelectedToken(tokens[0]);

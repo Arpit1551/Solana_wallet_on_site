@@ -4,6 +4,7 @@ import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 
 export interface TokenTypes {
     id: number | string;
+    token_mint?: String;
     name: string;
     symbol: string;
     img: string;

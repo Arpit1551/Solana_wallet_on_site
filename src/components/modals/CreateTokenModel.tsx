@@ -69,8 +69,9 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
             });
 
             if (response?.success) {
-                await addToken({
+                addToken({
                     id: tokens.length,
+                    token_mint: response.token_mint,
                     name: formData.name,
                     symbol: formData.symbol,
                     img: response.img_url,

@@ -1,6 +1,6 @@
-import { mintTo } from "@solana/spl-token"
+import { mintTo, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token"
 import { connection } from "../constants"
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey, sendAndConfirmRawTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
 
 interface mintTokenProps{
@@ -9,7 +9,11 @@ interface mintTokenProps{
     amount: number
 }
 
-export const mintToken = async ({mintPubkey, ataAddress, amount}: mintTokenProps) => {
+export const mintToken = async ({ mintPubkey, ataAddress, amount }: mintTokenProps) => {
+
+    console.log("Mint => ", mintPubkey);
+    console.log("Ata => ", ataAddress);
+    console.log("amount => ", amount);
 
     const secretKey = await localStorage.getItem('secretKey');
     if(!secretKey){
@@ -24,7 +28,10 @@ export const mintToken = async ({mintPubkey, ataAddress, amount}: mintTokenProps
         new PublicKey(mintPubkey), 
         new PublicKey(ataAddress), 
         payer.publicKey, 
-        amount
+        amount,
+        undefined,
+        undefined,
+        TOKEN_2022_PROGRAM_ID
     );
 
     return signature;

@@ -4,6 +4,7 @@ import { createInitializeMetadataPointerInstruction, createInitializeMintInstruc
 import { createInitializeInstruction, pack } from "@solana/spl-token-metadata";
 import { connection } from "../constants";
 import { uploadMetadata } from "../services/uploadMetadataFile";
+import { createAssociateTokenAccount } from "./createAta";
 
 interface createTokenProps {
     name: string,
@@ -76,13 +77,13 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: creat
                     uri: metadata.uri
                 })
             );
-
+            
             const signature = await sendAndConfirmTransaction(connection, tx, [userKeypair, mintKeypair]);
-            console.log(signature, mintKeypair.publicKey);
+            await createAssociateTokenAccount({ mintPubkey: mintKeypair.publicKey });
 
             return {
                 tx_sign: signature,
-                token_mint: mintKeypair.publicKey,
+                token_mint: mintKeypair.publicKey.toBase58(),
                 img_url: getUri.img_url,
                 success: true
             }
