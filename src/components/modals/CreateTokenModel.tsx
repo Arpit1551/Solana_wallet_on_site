@@ -77,6 +77,7 @@ export const CreateTokenModal = ({ isOpen, onClose }: CreateTokenModalProps) => 
                     img: response.img_url,
                     color: "#8247e5",
                     balance: 0,
+                    decimals: response.decimals,
                     price: 0,
                     valueUsd: 0,
                     change24h: 0

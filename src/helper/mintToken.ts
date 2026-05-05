@@ -1,21 +1,20 @@
 import { mintTo, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token"
 import { connection } from "../constants"
-import { Keypair, PublicKey, sendAndConfirmRawTransaction } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 
 interface mintTokenProps{
-    mintPubkey: PublicKey,
-    ataAddress: PublicKey,
-    amount: number
+    mintPubkey: PublicKey;
+    ataAddress: PublicKey;
+    amount: number;
+    decimals: number;
 }
 
-export const mintToken = async ({ mintPubkey, ataAddress, amount }: mintTokenProps) => {
-
-    console.log("Mint => ", mintPubkey);
-    console.log("Ata => ", ataAddress);
-    console.log("amount => ", amount);
+export const mintToken = async ({ mintPubkey, ataAddress, amount, decimals }: mintTokenProps) => {
 
     const secretKey = await localStorage.getItem('secretKey');
+    let mint_amount = amount * decimals;
+
     if(!secretKey){
         console.log("Cannot get secret key of the user !");
         return;
@@ -28,7 +27,7 @@ export const mintToken = async ({ mintPubkey, ataAddress, amount }: mintTokenPro
         new PublicKey(mintPubkey), 
         new PublicKey(ataAddress), 
         payer.publicKey, 
-        amount,
+        mint_amount,
         undefined,
         undefined,
         TOKEN_2022_PROGRAM_ID

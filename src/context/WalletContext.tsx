@@ -10,6 +10,7 @@ export interface TokenTypes {
     img: string;
     color: string;
     balance: number;
+    decimals: number;
     price: number;
     valueUsd: number;
     change24h: number;
@@ -45,6 +46,7 @@ const updateSolInList = useCallback((solAmount: number) => {
             img: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
             color: "#8247e5",
             balance: solAmount,
+            decimals: 9,
             price: 150,
             valueUsd: solAmount * 150,
             change24h: 5.2

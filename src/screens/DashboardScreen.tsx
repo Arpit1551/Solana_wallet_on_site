@@ -40,13 +40,11 @@ export const DashboardScreen = () => {
   }, [pubKey]);
 
   const handleMintAction = async (amount: number, token: TokenTypes) => {
-    console.log("Minting amount:", amount);
-    console.log("Token: ", token.token_mint);
 
     if (token.token_mint) {
       let ata = await createAssociateTokenAccount({ mintPubkey: new PublicKey(token.token_mint) });
       if (ata) {
-        let response = await mintToken({ mintPubkey: new PublicKey(token.token_mint), ataAddress: ata, amount: amount });
+        let response = await mintToken({ mintPubkey: new PublicKey(token.token_mint), ataAddress: ata, amount: amount, decimals: token.decimals });
         console.log(response);
       }
     };

@@ -84,6 +84,7 @@ export const createToken = async ({ name, symbol, decimal, imgUrl, desc }: creat
             return {
                 tx_sign: signature,
                 token_mint: mintKeypair.publicKey.toBase58(),
+                decimals: decimal,
                 img_url: getUri.img_url,
                 success: true
             }
